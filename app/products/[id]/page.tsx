@@ -1,18 +1,17 @@
 import { createClient } from '@/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 
-interface ProductPageProps {
-  params: { id: string };
-}
+type tParams = Promise<{ id: string }>;
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({ params }: { params: tParams }) {
+  const { id } = await params;
   const supabase = createClient();
 
   // Fetch product based on the dynamic [id] parameter
   const { data: product, error } = await supabase
     .from('products')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error || !product) {
